@@ -12,9 +12,8 @@ require("./config/mongose.config");
 const ClienteRouter = require("./routes/cliente.routes");
 app.use("/api/cliente", ClienteRouter);
 
-/*
-const PersonRouter = require("./routes/person.routes");
-app.use("/api/person", PersonRouter);
-*/
+const PrestamoRouter = require("./routes/prestamo.routes");
+app.use("/api/prestamo", PrestamoRouter);
+
 
 app.listen( port, () => console.log(`Listening on port: ${port} (http://localhost:${port}/)`)); 
