@@ -14,6 +14,7 @@ const ClienteForm = () => {
         lastName: '',
         numCedula: 0,
         telefono: '',
+        email: '',
         direccion: ''
     }
 
@@ -72,6 +73,10 @@ const ClienteForm = () => {
                         <div className="d-flex justify-content-between m-3">
                             <label className="mr-3">Telefono:</label>
                             <input type="text" className="form-control" name="telefono" value={clientes.telefono} onChange={handleChange} />
+                        </div>
+                        <div className="d-flex justify-content-between m-3">
+                            <label className="mr-3">Email:</label>
+                            <input type="text" className="form-control" name="email" value={clientes.email} onChange={handleChange} />
                         </div>
                         <div className="d-flex justify-content-between m-3">
                             <label className="mr-3">Direccion:</label>

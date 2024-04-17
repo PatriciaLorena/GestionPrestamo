@@ -21,6 +21,11 @@ const ClienteSchema = new mongoose.Schema({
         required: [true, "el nombre es requerido"],
         minlength: [6, "el numero de telefono debe tener al menos 6 caracteres"], 
     },
+    email: { 
+        type: String,
+        required: [true, "el email es requerido"],
+        minlength: [6, "el email debe tener al menos 6 caracteres"], 
+    },
     direccion: {
         type: String,
         required: [true, "la direccion es requerido"],

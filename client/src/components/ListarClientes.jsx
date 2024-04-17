@@ -70,6 +70,7 @@ const ListarClientes = ({ clientes, setClientes }) => {
                     <th>Apellido</th>
                     <th>Nº de cedula</th>
                     <th>Telefóno</th>
+                    <th>Email</th>
                     <th>Dirección</th>
                     <th>Acciones</th>
                 </tr>
@@ -81,6 +82,7 @@ const ListarClientes = ({ clientes, setClientes }) => {
                         <td>{cliente.lastName}</td>
                         <td>{cliente.numCedula}</td>
                         <td>{cliente.telefono}</td>
+                        <td>{cliente.email}</td>
                         <td>{cliente.direccion}</td>
                         <td>
                             <Link to={`/prestamos`} className="colorBtn">Ver Prestamos</Link>
