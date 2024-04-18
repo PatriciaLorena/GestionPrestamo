@@ -3,7 +3,6 @@ const {PrestamoModel  } = require("../models/prestamo.model");
 module.exports = {
     getAllPrestamos: (req, res) => {
         PrestamoModel.find({})
-        //aca muestra los datos des usuario si no le pasamos nada muestra todo y si le pasamos atributos muestra eso con menos no muestra 
             .populate("cliente", "name")
             .then((allPrestamos) => res.json({ prestamos: allPrestamos }))
             .catch((err) =>
@@ -22,7 +21,7 @@ module.exports = {
                 {new:true}
             );*/
         })
-        .then((updatedPrestamo) => PrestamoModel.findOne({ _id: newPrestamoCreated._id}).populate("cliente"))
+        .then((updatedPrestamo) => PrestamoModel.findOne({ _id: newPrestamoCreated._id}).populate("cliente" , "name"))
         .then((newPrestamo) => res.status(201).json(newPrestamo))
         .catch((err) =>
                 res.status(500).json({ message: "something went wrong", error: err })

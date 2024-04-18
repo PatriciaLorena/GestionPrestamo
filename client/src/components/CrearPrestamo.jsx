@@ -1,71 +1,118 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { useNavigate, useParams, Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import '../App.css';
+import { useNavigate } from 'react-router-dom';
+
 
 const CrearPrestamo = () => {
-    const [startDate, setStartDate] = useState(new Date()); // Estado para la fecha de préstamo
-    const navegate = useNavigate();
+    const navigate = useNavigate();
+    const [clientes, setClientes] = useState([]);
+    const [selectedCliente, setSelectedCliente] = useState('');
+    const [monto, setMonto] = useState('');
+    const [plazo, setPlazo] = useState('6');
+    const [interes, setInteres] = useState('10');
+    const [startDate, setStartDate] = useState(new Date());
+
+    useEffect(() => {
+        axios.get('http://127.0.0.1:80/api/cliente')
+            .then(res => {
+                setClientes(res.data.clientes);
+            })
+            .catch(err => console.log(err));
+    }, []);
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+
+        if (!selectedCliente || !monto) {
+            alert('Por favor completa todos los campos.');
+            return;
+        }
+
+        const prestamoData = {
+            cliente: selectedCliente,
+            monto: monto,
+            numCuotas: plazo,
+            interes: interes,
+            fechaPrestamo: startDate
+        };
+
+        axios.post('http://127.0.0.1:80/api/prestamo', prestamoData)
+            .then(res => {
+                console.log(res.data.prestamos);
+                clearForm();
+                navigate("/");
+            })
+            .catch(err => {
+                alert('Error al crear el préstamo. Por favor inténtalo de nuevo.');
+                console.error(err);
+            });
+    };
+
+    const clearForm = () => {
+        setSelectedCliente('');
+        setMonto('');
+        setPlazo('6');
+        setInteres('10');
+        setStartDate(new Date());
+    };
 
     return (
-        <form>
+        <form onSubmit={handleSubmit}>
             <div className="row align-items-center">
                 <div className="col-auto">
-                    <h1>H&N Prestamos</h1>
+                    <h1>H&N Préstamos</h1>
                 </div>
-
                 <div className="col-auto ms-auto">
-                    <Link to={`/`} className="btn btn-primary btn-sm me-1 botonAdd estBtn">back to home</Link>
+                    <Link to="/" className="btn btn-primary btn-sm me-1 botonAdd estBtn">Volver al inicio</Link>
                 </div>
             </div>
             <div className="row align-items-center">
                 <div className="col-auto">
-                    <label className='me-3' htmlFor="">Cliente: </label>
-                    <select>
-                        <option value="default">Patricia</option>
-                        <option value="">Juan</option>
-                        <option value="">Pedro</option>
+                    <label htmlFor="cliente">Cliente: </label>
+                    <select id="cliente" value={selectedCliente} onChange={(e) => setSelectedCliente(e.target.value)}>
+                        <option value="">Selecciona un cliente</option>
+                        {clientes.map(cliente => (
+                            <option key={cliente._id} value={cliente._id}>{cliente.name}</option>
+                        ))}
                     </select>
                 </div>
                 <div className="col-auto ms-auto">
-                    <label className='me-3' htmlFor="">Plazo a pagar: </label>
-                    <select>
-                        <option value="default">6 meses</option>
-                        <option value="">12 meses</option>
-                        <option value="">18 meses</option>
-                        <option value="">24 meses</option>
+                    <label htmlFor="plazo">Plazo a pagar: </label>
+                    <select id="plazo" value={plazo} onChange={(e) => setPlazo(e.target.value)}>
+                        <option value="6">6 meses</option>
+                        <option value="12">12 meses</option>
+                        <option value="18">18 meses</option>
+                        <option value="24">24 meses</option>
                     </select>
                 </div>
                 <div className="col-auto ms-auto">
-                    <label className='me-3' htmlFor="">Interes: </label>
-                    <select>
-                        <option value="default">10%</option>
-                        <option value="">20%</option>
-                        <option value="">30%</option>
+                    <label htmlFor="interes">Interés: </label>
+                    <select id="interes" value={interes} onChange={(e) => setInteres(e.target.value)}>
+                        <option value="10">10%</option>
+                        <option value="20">20%</option>
+                        <option value="30">30%</option>
                     </select>
                 </div>
             </div>
-
             <div className="row align-items-center mt-3">
                 <div className="col-auto">
-                    <label className='me-3' htmlFor="">Cantidad préstamo: </label>
-                    <input type="text" name="cantidad" placeholder="ej. 1000" />
+                    <label htmlFor="monto">Cantidad préstamo: </label>
+                    <input type="text" id="monto" value={monto} onChange={(e) => setMonto(e.target.value)} />
                 </div>
-                
                 <div className="col-auto ms-auto">
                     <label className='me-3' htmlFor="">Fecha de préstamo: </label>
                     <DatePicker selected={startDate} onChange={date => setStartDate(date)} dateFormat="dd/MM/yyyy" />
                 </div>
                 <div className="col-auto ms-auto">
-                    <button className='btn btn-primary'>Generar cuotas</button>
+                    <button type="submit" className="btn btn-primary">Generar préstamo</button>
                 </div>
             </div>
-            <button type="submit" className="btn btn-primary mt-3" onClick={() => navegate("/prestamos")}>Guardar Prestamo</button>
-            <button type="button" className="btn btn-danger mt-3 ms-3" onClick={() => navegate("/")}>Cancel</button>
+            <button type="button" className="btn btn-danger mt-3 ms-3" onClick={() => navigate("/")}>Cancelar</button>
         </form>
     );
-}
+};
 
 export default CrearPrestamo;
