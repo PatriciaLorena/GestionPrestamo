@@ -19,7 +19,7 @@ const PrestamoSchema = new mongoose.Schema({
         required: [true, "la fecha de prestamo es requerido"],
     },
     interes: { 
-        type: String,
+        type: Number,
         required: [true, "el interes es requerido"],
     },
     
