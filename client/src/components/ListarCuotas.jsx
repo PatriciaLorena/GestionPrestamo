@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import { Link } from 'react-router-dom';
+
 
 const ListarCuotas = ({ prestamos, setPrestamos, idPrestamoEnCreacion }) => {
     const [isLoading, setIsLoading] = useState(true);
@@ -51,16 +53,24 @@ const ListarCuotas = ({ prestamos, setPrestamos, idPrestamoEnCreacion }) => {
                         </tr>
                     ))}
                 </tbody>
-                <footer>
+                <tfoot>
                     <tr>
-                        <td>    
-                            Total a pagar: ${prestamoEnCreacion ? prestamoEnCreacion.cuotas.reduce((acc, cuota) => acc + cuota.montoCuota, 0) : 0} 
+                        <td colSpan="6">
+                            <b>Total a pagar: </b>${prestamoEnCreacion ? prestamoEnCreacion.cuotas.reduce((acc, cuota) => acc + cuota.montoCuota, 0) : 0} 
                         </td>
                     </tr>
-                </footer>
+                </tfoot>
             </table>
+            
+            {prestamoEnCreacion && (
+                <>
+                    <Link to="/prestamos" className="btn btn-primary m-3 px-5">Guardar</Link>
+                    <button className="btn btn-danger px-5">Cancelar</button>
+                </>
+            )}
         </div>
     );
+    
 };
 
 ListarCuotas.propTypes = {
