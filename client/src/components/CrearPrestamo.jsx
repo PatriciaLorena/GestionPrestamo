@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 
 const CrearPrestamo = ({ updateCuotas }) => {
     const [clientes, setClientes] = useState([]);
-
+    const [fechaPrestamo, setFechaPrestamo] = useState(new Date());
     const initialValues = {
         cliente: '',
         monto: '',
@@ -35,7 +35,7 @@ const CrearPrestamo = ({ updateCuotas }) => {
             alert('Por favor completa todos los campos.');
             return;
         }
-
+        prestamos.fechaPrestamo = fechaPrestamo;
         axios.post('http://127.0.0.1:80/api/prestamo', prestamos)
         .then(res => {
             updateCuotas(res.data);
@@ -78,7 +78,7 @@ const CrearPrestamo = ({ updateCuotas }) => {
                     </div>
                     <div className="col-auto">
                         <label htmlFor="plazo">Plazo a pagar: </label>
-                        <select id="plazo" value={prestamos.numCuotas} onChange={handleChange}>
+                        <select id="plazo" name="numCuotas" value={prestamos.numCuotas} onChange={handleChange}>
                             <option value="6">6 meses</option>
                             <option value="12">12 meses</option>
                             <option value="18">18 meses</option>
@@ -86,13 +86,13 @@ const CrearPrestamo = ({ updateCuotas }) => {
                         </select>
                     </div>
                     <div className="col-auto">
-                        <label htmlFor="interes">Interés: </label>
-                        <select id="interes" value={prestamos.interes} onChange={handleChange}>
-                            <option value="10">10%</option>
-                            <option value="20">20%</option>
-                            <option value="30">30%</option>
-                        </select>
-                    </div>
+    <label htmlFor="interes">Interés: </label>
+    <select id="interes" name="interes" value={prestamos.interes} onChange={handleChange}>
+        <option value="10">10%</option>
+        <option value="20">20%</option>
+        <option value="30">30%</option>
+    </select>
+</div>
                 </div>
                 <div className="row align-items-center mt-3">
                     <div className="col-auto">
@@ -100,16 +100,20 @@ const CrearPrestamo = ({ updateCuotas }) => {
                         <input type="text" id="monto" name="monto" value={prestamos.monto} onChange={handleChange} />
                     </div>
                     <div className="col-auto">
-                        <label className='me-3' htmlFor="startDate">Fecha de préstamo: </label>
-                        <DatePicker selected={prestamos.fechaPrestamo} onChange={handleChange} dateFormat="dd/MM/yyyy" id="startDate" />
+                        <label className='me-3' htmlFor="fechaPrestamo">Fecha de préstamo: </label>
+                        <DatePicker 
+                            selected={fechaPrestamo} 
+                            onChange={date => setFechaPrestamo(date)} 
+                            dateFormat="dd/MM/yyyy" 
+                            id="fechaPrestamo" 
+                        />
                     </div>
                 </div>
                 <div className="row align-items-center mt-3">
                     <button type="submit" className="btn btn-primary">Generar cuotas</button>
                 </div>
             </form>
-            <button type="button" className="btn btn-primary mt-3" >Guardar Prestamo</button>
-            <button type="button" className="btn btn-danger mt-3">Cancelar</button>
+            
         </div>
     );
 }

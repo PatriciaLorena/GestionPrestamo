@@ -2,15 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 
-const ListarCuotas = ({ prestamos, setPrestamos }) => {
+const ListarCuotas = ({ prestamos, setPrestamos, idPrestamoEnCreacion }) => {
     const [isLoading, setIsLoading] = useState(true);
-    
 
-    
     useEffect(() => {
         axios.get('http://127.0.0.1:80/api/prestamo')
             .then(res => {
-                console.log(res.data.prestamos);
                 setPrestamos(res.data.prestamos);
                 setIsLoading(false);
             })
@@ -23,6 +20,10 @@ const ListarCuotas = ({ prestamos, setPrestamos }) => {
     if (isLoading) {
         return <h1>Loading...</h1>
     }
+
+    // Filtrar las cuotas del préstamo en creación
+    const prestamoEnCreacion = prestamos.find(prestamo => prestamo._id === idPrestamoEnCreacion);
+    const cuotasEnCreacion = prestamoEnCreacion ? prestamoEnCreacion.cuotas : [];
 
     return (
         <div className="mt-4">
@@ -39,21 +40,24 @@ const ListarCuotas = ({ prestamos, setPrestamos }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {prestamos.map((prestamo, index) => (
-                        <React.Fragment key={index}>
-                            {prestamo && Array.isArray(prestamo.cuotas) && prestamo.cuotas.map((cuota, subIndex) => (
-                                <tr key={`${index}-${subIndex}`}>
-                                    <td>{cuota && cuota.numCuotas}</td>
-                                    <td>{cuota && cuota.fechaVencimiento}</td>
-                                    <td>{cuota && cuota.montoCuota}</td>
-                                    <td>{cuota && cuota.mora}</td>
-                                    <td>{cuota && cuota.diasMora}</td>
-                                    <td>{cuota && cuota.estado}</td>
-                                </tr>
-                            ))}
-                        </React.Fragment>
+                    {cuotasEnCreacion.map((cuota, index) => (
+                        <tr key={index}>
+                            <td>{cuota.numCuotas}</td>
+                            <td>{cuota.fechaVencimiento}</td>
+                            <td>{cuota.montoCuota}</td>
+                            <td>{cuota.mora}</td>
+                            <td>{cuota.diasMora}</td>
+                            <td>{cuota.estado}</td>
+                        </tr>
                     ))}
                 </tbody>
+                <footer>
+                    <tr>
+                        <td>    
+                            Total a pagar: ${prestamoEnCreacion ? prestamoEnCreacion.cuotas.reduce((acc, cuota) => acc + cuota.montoCuota, 0) : 0} 
+                        </td>
+                    </tr>
+                </footer>
             </table>
         </div>
     );
@@ -61,7 +65,8 @@ const ListarCuotas = ({ prestamos, setPrestamos }) => {
 
 ListarCuotas.propTypes = {
     prestamos: PropTypes.array.isRequired,
-    setPrestamos: PropTypes.func.isRequired
+    setPrestamos: PropTypes.func.isRequired,
+    idPrestamoEnCreacion: PropTypes.string.isRequired
 };
 
 export default ListarCuotas;
