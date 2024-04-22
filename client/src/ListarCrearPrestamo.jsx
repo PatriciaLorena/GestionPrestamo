@@ -3,22 +3,20 @@ import CrearPrestamo from './components/CrearPrestamo';
 import ListarCuotas from './components/ListarCuotas';
 
 function ListarCrearPrestamo() {
-
     const [prestamos, setPrestamos] = useState([]);
 
-    const updateCuotas = (prestamo) => {
-        setPrestamos(prevPrestamos => prevPrestamos ? [...prevPrestamos, prestamo] : [prestamo]);
+    const updateCuotas = (nuevoPrestamo) => {
+        setPrestamos(prevPrestamos => [...prevPrestamos, nuevoPrestamo]);
+        console.log(nuevoPrestamo)
     };
     
-
     return (
         <div className="row">
             <CrearPrestamo updateCuotas={updateCuotas} />
-      
-                <ListarCuotas prestamos={prestamos} setPrestamos={setPrestamos} />
-                
-            </div>
+            <ListarCuotas prestamos={prestamos} setPrestamos={setPrestamos} />
+        </div>
     );
 }
+
 
 export default ListarCrearPrestamo;

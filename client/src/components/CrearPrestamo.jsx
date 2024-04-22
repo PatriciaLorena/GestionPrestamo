@@ -37,21 +37,20 @@ const CrearPrestamo = ({ updateCuotas }) => {
         }
 
         axios.post('http://127.0.0.1:80/api/prestamo', prestamos)
-            .then(res => {
-                updateCuotas(res.data.prestamos);
-                console.log(res.data.prestamos);
-                clearData();
-                Swal.fire({
-                    icon: "success",
-                    title: "Genial!",
-                    text: "Agregaste un préstamo",
-                });
-                setError('');
-            })
-            .catch(err => {
-                console.log(err);
-                setError(err.response.data.error.message);
+        .then(res => {
+            updateCuotas(res.data);
+            console.log(res.data); 
+            Swal.fire({
+                icon: "success",
+                title: "Genial!",
+                text: "Agregaste un préstamo",
             });
+            setError('');
+        })
+        .catch(err => {
+            console.log(err);
+            setError(err.response.data.error.message);
+        });
             
     };
 

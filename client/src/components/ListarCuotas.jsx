@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 
 const ListarCuotas = ({ prestamos, setPrestamos }) => {
     const [isLoading, setIsLoading] = useState(true);
+    
 
+    
     useEffect(() => {
         axios.get('http://127.0.0.1:80/api/prestamo')
             .then(res => {
@@ -39,20 +41,18 @@ const ListarCuotas = ({ prestamos, setPrestamos }) => {
                 <tbody>
                     {prestamos.map((prestamo, index) => (
                         <React.Fragment key={index}>
-                            {Array.isArray(prestamo.cuotas) && prestamo.cuotas.map((cuota, subIndex) => (
+                            {prestamo && Array.isArray(prestamo.cuotas) && prestamo.cuotas.map((cuota, subIndex) => (
                                 <tr key={`${index}-${subIndex}`}>
-                                    <td>{cuota.numCuotas}</td>
-                                    <td>{cuota.fechaVencimiento}</td>
-                                    <td>{cuota.montoCuota}</td>
-                                    <td>{cuota.mora}</td>
-                                    <td>{cuota.diasMora}</td>
-                                    <td>{cuota.estado}</td>
+                                    <td>{cuota && cuota.numCuotas}</td>
+                                    <td>{cuota && cuota.fechaVencimiento}</td>
+                                    <td>{cuota && cuota.montoCuota}</td>
+                                    <td>{cuota && cuota.mora}</td>
+                                    <td>{cuota && cuota.diasMora}</td>
+                                    <td>{cuota && cuota.estado}</td>
                                 </tr>
                             ))}
                         </React.Fragment>
                     ))}
-
-
                 </tbody>
             </table>
         </div>
