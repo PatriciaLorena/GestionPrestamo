@@ -39,13 +39,13 @@ const VerPrestamos = () => {
                     {prestamos.map((prestamo, index) => (
                         <tr key={index}>
                             <td>{prestamo.cliente ? prestamo.cliente.name : 'Sin nombre'}</td>
-                            <td>{prestamo.cliente ? prestamo.cliente.apellido : 'Sin apellido'}</td>
+                            <td>{prestamo.cliente ? prestamo.cliente.lastName : 'Sin apellido'}</td>
                             <td>{prestamo.monto}</td>
                             <td>{prestamo.numCuotas}</td>
                             <td>{prestamo.cuotas.length > 0 ? prestamo.cuotas[prestamo.cuotas.length - 1].fechaVencimiento : 'Sin fecha'}</td>
                             <td>{prestamo.cuotas.length > 0 ? prestamo.cuotas[prestamo.cuotas.length - 1].estado : 'Sin estado'}</td>
                             <td>
-                                <button className="btn btn-success btn-sm me-1">Editar</button>
+                                <button className="btn btn-success btn-sm me-1">Detalle</button>
                                 <button className="btn btn-danger btn-sm">Eliminar</button>
                             </td>
                         </tr>

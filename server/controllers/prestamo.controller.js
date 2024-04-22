@@ -3,7 +3,7 @@ const { PrestamoModel } = require("../models/prestamo.model");
 module.exports = {
     getAllPrestamos: (req, res) => {
         PrestamoModel.find({})
-            .populate("cliente", "name")
+            .populate("cliente", ["name", "lastName"])
             .then((allPrestamos) => res.json({ prestamos: allPrestamos }))
             .catch((err) =>
                 res.status(500).json({ message: "something went wrong", error: err })
@@ -23,7 +23,7 @@ module.exports = {
         });
 
         const montoTotalConIntereses = monto * (1 + interes / 100); 
-const montoCuota = montoTotalConIntereses / numCuotas; 
+        const montoCuota = montoTotalConIntereses / numCuotas; 
 
         function calcularFechaVencimiento(fechaPrestamo, numCuota) {
             const fecha = new Date(fechaPrestamo);
