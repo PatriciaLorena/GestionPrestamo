@@ -10,5 +10,6 @@ PrestamoRouter.get("/", PrestamoController.getAllPrestamos);
 PrestamoRouter.get("/:id", PrestamoController.getOnePrestamoById);
 PrestamoRouter.put("/:id", PrestamoController.updateOnePrestamoById);
 PrestamoRouter.delete("/:id", PrestamoController.deleteOnePrestamoById);
+//PrestamoRouter.get("/:id/cuotas", PrestamoController.createNewCuota);
 
 module.exports = PrestamoRouter;

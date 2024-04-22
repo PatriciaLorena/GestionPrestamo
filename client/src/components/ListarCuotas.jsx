@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import PropTypes from 'prop-types';
 
-const ListarCuotas = () => {
-    const [prestamos, setPrestamos] = useState([]);
-    const [isLoading, setIsloaging] = useState(true);
+const ListarCuotas = ({ prestamos, setPrestamos }) => {
+    const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
         axios.get('http://127.0.0.1:80/api/prestamo')
             .then(res => {
+                console.log(res.data.prestamos);
                 setPrestamos(res.data.prestamos);
-                setIsloaging(false);
+                setIsLoading(false);
             })
-            .catch(err => console.log(err));
-            setIsloaging(false);
+            .catch(err => {
+                console.log(err);
+                setIsLoading(false);
+            });
     }, [setPrestamos]);
+
     if (isLoading) {
         return <h1>Loading...</h1>
     }
-    
-
-
 
     return (
         <div className="mt-4">
@@ -37,7 +39,7 @@ const ListarCuotas = () => {
                 <tbody>
                     {prestamos.map((prestamo, index) => (
                         <React.Fragment key={index}>
-                            {prestamo.cuotas.map((cuota, subIndex) => (
+                            {Array.isArray(prestamo.cuotas) && prestamo.cuotas.map((cuota, subIndex) => (
                                 <tr key={`${index}-${subIndex}`}>
                                     <td>{cuota.numCuotas}</td>
                                     <td>{cuota.fechaVencimiento}</td>
@@ -49,11 +51,17 @@ const ListarCuotas = () => {
                             ))}
                         </React.Fragment>
                     ))}
+
+
                 </tbody>
             </table>
         </div>
     );
 };
 
-export default ListarCuotas;
+ListarCuotas.propTypes = {
+    prestamos: PropTypes.array.isRequired,
+    setPrestamos: PropTypes.func.isRequired
+};
 
+export default ListarCuotas;

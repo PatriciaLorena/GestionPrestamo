@@ -3,18 +3,23 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import ListarCuotas from './ListarCuotas';
+import useForm from '../hooks/useForm'; 
+import Swal from 'sweetalert2';
+import PropTypes from 'prop-types';
 
-const CrearPrestamo = () => {
+const CrearPrestamo = ({ updateCuotas }) => {
     const [clientes, setClientes] = useState([]);
-    const [selectedCliente, setSelectedCliente] = useState('');
-    const [loading, setLoading] = useState(true);
-    const [monto, setMonto] = useState('');
-    const [plazo, setPlazo] = useState('6');
-    const [interes, setInteres] = useState('10');
-    const [startDate, setStartDate] = useState(new Date());
-    const [prestamoId, setPrestamoId] = useState(null); // Para almacenar el ID del préstamo recién creado
-    const [cuotas, setCuotas] = useState([]);
+
+    const initialValues = {
+        cliente: '',
+        monto: '',
+        numCuotas: '6',
+        fechaPrestamo: new Date(),
+        interes: '10'
+    };
+
+    const { values: prestamos, handleChange, clearData } = useForm(initialValues);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         axios.get('http://127.0.0.1:80/api/cliente')
@@ -24,62 +29,36 @@ const CrearPrestamo = () => {
             .catch(err => console.log(err));
     }, []);
 
-    useEffect(() => {
-        if (prestamoId) {
-            // Realizar una solicitud al servidor para obtener las cuotas asociadas al préstamo
-            axios.get(`http://127.0.0.1:80/api/prestamo/${prestamoId}/cuotas`)
-                .then(res => {
-                    setCuotas(res.data.cuotas);
-                })
-                .catch(err => console.log(err));
-        }
-    }, [prestamoId]);
-    
-
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!selectedCliente || !monto) {
+        if (!prestamos.cliente || !prestamos.monto) {
             alert('Por favor completa todos los campos.');
             return;
         }
 
-        const prestamoData = {
-            cliente: selectedCliente,
-            monto: monto,
-            numCuotas: plazo,
-            fechaPrestamo: startDate,
-            interes: interes
-        };
-
-        axios.post('http://127.0.0.1:80/api/prestamo', prestamoData)
+        axios.post('http://127.0.0.1:80/api/prestamo', prestamos)
             .then(res => {
-                if (res.data.prestamo && res.data.prestamo._id) {
-                    setPrestamoId(res.data.prestamo._id); // Guardar el ID del préstamo recién creado
-                }
-                if (res.data.prestamo && res.data.prestamo.cuotas) {
-                    setCuotas(res.data.prestamo.cuotas);
-                }
-                clearForm();
+                updateCuotas(res.data.prestamos);
+                console.log(res.data.prestamos);
+                clearData();
+                Swal.fire({
+                    icon: "success",
+                    title: "Genial!",
+                    text: "Agregaste un préstamo",
+                });
+                setError('');
             })
             .catch(err => {
-                alert('Error al crear el préstamo. Por favor inténtalo de nuevo.');
-                console.error(err);
+                console.log(err);
+                setError(err.response.data.error.message);
             });
+            
     };
-
-    const clearForm = () => {
-        setSelectedCliente('');
-        setMonto('');
-        setPlazo('6');
-        setInteres('10');
-        setStartDate(new Date());
-    };
-
-    
 
     return (
         <div>
             <form onSubmit={handleSubmit}>
+                <div className="text-danger">{error}</div>
                 <div className="row align-items-center">
                     <div className="col-auto">
                         <h1>H&N Préstamos</h1>
@@ -91,7 +70,7 @@ const CrearPrestamo = () => {
                 <div className="row align-items-center mt-3">
                     <div className="col-auto">
                         <label htmlFor="cliente">Cliente: </label>
-                        <select id="cliente" value={selectedCliente} onChange={(e) => setSelectedCliente(e.target.value)}>
+                        <select id="cliente" name="cliente" value={prestamos.cliente} onChange={handleChange}>
                             <option value="">Selecciona un cliente</option>
                             {clientes.map(cliente => (
                                 <option key={cliente._id} value={cliente._id}>{cliente.name}</option>
@@ -100,7 +79,7 @@ const CrearPrestamo = () => {
                     </div>
                     <div className="col-auto">
                         <label htmlFor="plazo">Plazo a pagar: </label>
-                        <select id="plazo" value={plazo} onChange={(e) => setPlazo(e.target.value)}>
+                        <select id="plazo" value={prestamos.numCuotas} onChange={handleChange}>
                             <option value="6">6 meses</option>
                             <option value="12">12 meses</option>
                             <option value="18">18 meses</option>
@@ -109,7 +88,7 @@ const CrearPrestamo = () => {
                     </div>
                     <div className="col-auto">
                         <label htmlFor="interes">Interés: </label>
-                        <select id="interes" value={interes} onChange={(e) => setInteres(e.target.value)}>
+                        <select id="interes" value={prestamos.interes} onChange={handleChange}>
                             <option value="10">10%</option>
                             <option value="20">20%</option>
                             <option value="30">30%</option>
@@ -119,23 +98,27 @@ const CrearPrestamo = () => {
                 <div className="row align-items-center mt-3">
                     <div className="col-auto">
                         <label htmlFor="monto">Cantidad préstamo: </label>
-                        <input type="text" id="monto" value={monto} onChange={(e) => setMonto(e.target.value)} />
+                        <input type="text" id="monto" name="monto" value={prestamos.monto} onChange={handleChange} />
                     </div>
                     <div className="col-auto">
                         <label className='me-3' htmlFor="startDate">Fecha de préstamo: </label>
-                        <DatePicker selected={startDate} onChange={date => setStartDate(date)} dateFormat="dd/MM/yyyy" id="startDate" />
+                        <DatePicker selected={prestamos.fechaPrestamo} onChange={handleChange} dateFormat="dd/MM/yyyy" id="startDate" />
                     </div>
                 </div>
                 <div className="row align-items-center mt-3">
-                    <button type="submit" className="btn btn-primary">Generar préstamo</button>
+                    <button type="submit" className="btn btn-primary">Generar cuotas</button>
                 </div>
             </form>
-            
-            {/* Mostrar las cuotas solo si hay un préstamo generado */}
-            {<ListarCuotas cuotas={cuotas} />}
+            <button type="button" className="btn btn-primary mt-3" >Guardar Prestamo</button>
+            <button type="button" className="btn btn-danger mt-3">Cancelar</button>
         </div>
     );
 }
 
+CrearPrestamo.propTypes = {
+    updateCuotas: PropTypes.func
+};
+
 export default CrearPrestamo;
+
 

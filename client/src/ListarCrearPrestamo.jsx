@@ -1,28 +1,23 @@
-import React, { useState } from 'react';
-import CrearPrestamoForm from './components/CrearPrestamo';
+import { useState } from 'react';
+import CrearPrestamo from './components/CrearPrestamo';
 import ListarCuotas from './components/ListarCuotas';
 
 function ListarCrearPrestamo() {
 
-    const [cuotas, setCuotas] = useState(null);
+    const [prestamos, setPrestamos] = useState([]);
 
-    const updateCuotas = (cuota) => {
-        setCuotas([...cuotas, cuota]);
+    const updateCuotas = (prestamo) => {
+        setPrestamos(prevPrestamos => prevPrestamos ? [...prevPrestamos, prestamo] : [prestamo]);
     };
+    
 
     return (
         <div className="row">
-            <div className="col-6">
-                <h3 className='mt-5'>Listado de cuotas</h3>
-                <hr />
-                <ListarCuotas cuotas={cuotas} setCuotas={setCuotas} />
+            <CrearPrestamo updateCuotas={updateCuotas} />
+      
+                <ListarCuotas prestamos={prestamos} setPrestamos={setPrestamos} />
+                
             </div>
-            <div className="col-6">
-                <h3 className='mt-3'>Crear préstamo</h3>
-                <hr />
-                <CrearPrestamoForm updateCuotas={updateCuotas} />
-            </div>
-        </div>
     );
 }
 

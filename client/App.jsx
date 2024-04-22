@@ -4,7 +4,7 @@ import ListarCrearClientes from './src/ListarCrearClientes'
 import CrearCliente from './src/components/CrearCliente'
 import VerPrestamos from './VerPrestamos';
 import ClienteFormUpdate from './src/components/ClienteFormUpdate';
-import CrearPrestamo from './src/components/CrearPrestamo';
+import ListarCrearPrestamo from './src/ListarCrearPrestamo'
 
 
 
@@ -22,8 +22,8 @@ const App = () => {
         <Route path="/cliente/create"  element={<CrearCliente />} />
         <Route path="/prestamos" element={<VerPrestamos />}/>
         <Route path="/cliente/:id/update" element={<ClienteFormUpdate/>}/>
-        <Route path="/prestamo/create" element={<CrearPrestamo/>}/>
-
+       
+        <Route path="/prestamo/create" element={<ListarCrearPrestamo/>}/>
   
     </Routes>
 
