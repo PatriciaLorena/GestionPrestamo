@@ -1,9 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const VerPrestamos = () => {
     const [prestamos, setPrestamos] = useState([]);
+
+    const deletePrestamo = (prestamoId) => {
+        Swal.fire({
+            title: "Seguro que quieres eliminar este prestamo?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Si, quiero eliminar!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                axios.delete(`http://localhost:80/api/prestamo/${prestamoId}`)
+                .then(res => {
+                    console.log(res)
+                    Swal.fire({
+                        icon: "success",
+                        title: "Eliminado!",
+                        text: "Eliminaste un prestamo",
+                    });
+                    // Actualizar la lista de prestamos después de la eliminación
+                    setPrestamos(prestamos.filter(prestamo => prestamo._id !== prestamoId));
+                })
+                .catch(err => {
+                    console.error(err);
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error!",
+                        text: "Ocurrió un error al eliminar el prestamo",
+                    });
+                });
+            }
+        });
+    }
 
     useEffect(() => {
         axios.get('http://127.0.0.1:80/api/prestamo')
@@ -46,7 +80,7 @@ const VerPrestamos = () => {
                             <td>{prestamo.cuotas.length > 0 ? prestamo.cuotas[prestamo.cuotas.length - 1].estado : 'Sin estado'}</td>
                             <td>
                                 <button className="btn btn-success btn-sm me-1">Detalle</button>
-                                <button className="btn btn-danger btn-sm">Eliminar</button>
+                                <button className="btn btn-danger btn-sm" onClick={() => deletePrestamo(prestamo._id)}>Eliminar</button>
                             </td>
                         </tr>
                     ))}
