@@ -80,30 +80,5 @@ module.exports = {
                 res.status(400).json({ message: "something went wrong", error: err })
             );
     },
-
-    /*  
-    createNewCuota: (req, res) => {
-        const { id } = req.params;
-        const { numCuota, fechaVencimiento, montoCuota, mora, diasMora, estado } = req.body;
-      
-        PrestamoModel.findById(id)
-            .then((prestamo) => {
-                if (!prestamo) {
-                    return res.status(404).json({ message: "Cine not found" });
-                }
-
-                const newCuota = { numCuota, fechaVencimiento, montoCuota, mora, diasMora, estado };
-                prestamo.cuotas.push(newCuota);
-
-                return prestamo.save();
-            })
-            .then((updatedPrestamo) => {
-                res.status(201).json({ cine: updatedPrestamo });
-            })
-            .catch((err) => {
-                res.status(400).json({ message: "Something went wrong", error: err });
-            });
-    },
-   */
 };
 

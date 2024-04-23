@@ -14,14 +14,13 @@ const ModificarPrestamo = () => {
     const [cliente, setCliente] = useState(null);
     const [error, setError] = useState(null);
     const [fechaPrestamo, setFechaPrestamo] = useState(new Date());
+    const operacion = 1;
 
     useEffect(() => {
         axios.get(`http://127.0.0.1:80/api/prestamo/${id}`)
             .then(response => {
                 setPrestamo(response.data.prestamo);
-                setFechaPrestamo(new Date(response.data.prestamo.fechaPrestamo));
                 setLoading(false);
-                // Cargar información del cliente
                 axios.get(`http://127.0.0.1:80/api/cliente/${response.data.prestamo.cliente}`)
                     .then(clienteResponse => {
                         setCliente(clienteResponse.data.cliente);
@@ -67,6 +66,11 @@ const ModificarPrestamo = () => {
         }
     };
 
+    const agregarNuevaCuota = (nuevaCuota) => {
+        // Aquí puedes agregar la lógica para guardar la nueva cuota en el estado del préstamo
+        console.log('Nueva cuota:', nuevaCuota);
+    };
+
     if (loading) {
         return <h1>Cargando...</h1>;
     }
@@ -93,27 +97,32 @@ const ModificarPrestamo = () => {
                         <input type="text" id="cliente" name="cliente" value={cliente ? cliente.name : 'Cargando...'} disabled />
                     </div>
                     <div className="col-auto">
-                        <label htmlFor="monto">Monto: </label>
-                        <input type="text" id="monto" name="monto" value={prestamo.monto} onChange={handleChange} />
-                    </div>
-                    <div className="col-auto">
-                        <label htmlFor="numCuotas">Número de Cuotas: </label>
-                        <input type="text" id="numCuotas" name="numCuotas" value={prestamo.numCuotas} onChange={handleChange} />
+                        <label htmlFor="numCuotas">Cobrador: </label>
+                        <select id="cobrador" name="cobrador">
+                            <option value="">Selecciona un cobrador</option>
+                            <option value="1">Hector Cardozo</option>
+                            <option value="2">Daniel Rojas</option>
+                        </select>
                     </div>
                 </div>
                 <div className="row align-items-center mt-3">
                     <div className="col-auto">
-                        <label htmlFor="fechaPrestamo">Fecha de Préstamo: </label>
-                        <DatePicker 
-                            selected={fechaPrestamo} 
-                            onChange={date => setFechaPrestamo(date)} 
-                            dateFormat="dd/MM/yyyy" 
-                            id="fechaPrestamo" 
+                        <label htmlFor="monto">Numero de operacion: </label>
+                        <input type="number" id="monto" name="monto" value={operacion} />
+                    </div>
+                    <div className="col-auto">
+                        <label htmlFor="fechaPrestamo">Fecha de abono: </label>
+                        <DatePicker
+                            selected={fechaPrestamo}
+                            onChange={date => setFechaPrestamo(date)}
+                            dateFormat="dd/MM/yyyy"
+                            id="fechaPrestamo"
                         />
                     </div>
                 </div>
             </form>
-            <ListarCuotas prestamos={prestamo} setPrestamos={setPrestamo} idPrestamoEnCreacion={id} componenteLlamador='cobrarPrestamo'/>
+            <ListarCuotas prestamos={prestamo} setPrestamos={setPrestamo} idPrestamoEnCreacion={id} componenteLlamador='cobrarPrestamo' />
+        
         </div>
     );
 };

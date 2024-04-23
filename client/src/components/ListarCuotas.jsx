@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import PagoCuota from './PagoCuota';
 
-const ListarCuotas = ({ prestamos, setPrestamos, idPrestamoEnCreacion, componenteLlamador }) => {
+const ListarCuotas = ({ prestamos, setPrestamos, idPrestamoEnCreacion, componenteLlamador, agregarNuevaCuota }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -22,11 +23,12 @@ const ListarCuotas = ({ prestamos, setPrestamos, idPrestamoEnCreacion, component
         return <h1>Loading...</h1>
     }
 
-    // Filtrar las cuotas del préstamo en creación
+    // Filtra las cuotas del préstamo en creación
     const prestamoEnCreacion = prestamos.find(prestamo => prestamo._id === idPrestamoEnCreacion);
     const cuotasEnCreacion = prestamoEnCreacion ? prestamoEnCreacion.cuotas : [];
 
     return (
+        <> 
         <div className="mt-4">
             <h2>Lista de cuotas:</h2>
             <table className="table">
@@ -52,26 +54,26 @@ const ListarCuotas = ({ prestamos, setPrestamos, idPrestamoEnCreacion, component
                         </tr>
                     ))}
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <td colSpan="6">
-                            <b>Total a pagar: </b>${prestamoEnCreacion ? prestamoEnCreacion.cuotas.reduce((acc, cuota) => acc + cuota.montoCuota, 0) : 0} 
-                        </td>
-                    </tr>
-                </tfoot>
             </table>
             
             {prestamoEnCreacion && (
                 <>
+                    
                     {componenteLlamador === "crearPrestamo" ? (
                         <Link to="/prestamos" className="btn btn-primary m-3 px-5">Guardar</Link>
                     ) : (
+                        <>
+                        <PagoCuota agregarNuevaCuota={agregarNuevaCuota} numerosCuotas={cuotasEnCreacion.map(cuota => cuota.numCuotas)} />
                         <button className="btn btn-primary m-3 px-5">Cobrar</button>
+                        </>
                     )}
                     <button className="btn btn-danger px-5">Cancelar</button>
                 </>
             )}
         </div>
+        
+        <b>Total a pagar: </b>${prestamoEnCreacion ? prestamoEnCreacion.cuotas.reduce((acc, cuota) => acc + cuota.montoCuota, 0) : 0} 
+</>
     );
 };
 
