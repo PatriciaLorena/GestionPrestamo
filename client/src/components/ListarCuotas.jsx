@@ -3,8 +3,7 @@ import axios from 'axios';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-
-const ListarCuotas = ({ prestamos, setPrestamos, idPrestamoEnCreacion }) => {
+const ListarCuotas = ({ prestamos, setPrestamos, idPrestamoEnCreacion, componenteLlamador }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
@@ -64,19 +63,24 @@ const ListarCuotas = ({ prestamos, setPrestamos, idPrestamoEnCreacion }) => {
             
             {prestamoEnCreacion && (
                 <>
-                    <Link to="/prestamos" className="btn btn-primary m-3 px-5">Guardar</Link>
+                    {componenteLlamador === "crearPrestamo" ? (
+                        <Link to="/prestamos" className="btn btn-primary m-3 px-5">Guardar</Link>
+                    ) : (
+                        <button className="btn btn-primary m-3 px-5">Cobrar</button>
+                    )}
                     <button className="btn btn-danger px-5">Cancelar</button>
                 </>
             )}
         </div>
     );
-    
 };
 
 ListarCuotas.propTypes = {
     prestamos: PropTypes.array.isRequired,
     setPrestamos: PropTypes.func.isRequired,
-    idPrestamoEnCreacion: PropTypes.string.isRequired
+    idPrestamoEnCreacion: PropTypes.string.isRequired,
+    componenteLlamador: PropTypes.oneOf(["crearPrestamo", "cobrarPrestamo"]).isRequired
 };
 
 export default ListarCuotas;
+

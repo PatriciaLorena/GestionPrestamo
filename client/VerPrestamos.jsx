@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
+
 const VerPrestamos = () => {
     const [prestamos, setPrestamos] = useState([]);
 
@@ -79,6 +80,7 @@ const VerPrestamos = () => {
                             <td>{prestamo.cuotas.length > 0 ? prestamo.cuotas[prestamo.cuotas.length - 1].fechaVencimiento : 'Sin fecha'}</td>
                             <td>{prestamo.cuotas.length > 0 ? prestamo.cuotas[prestamo.cuotas.length - 1].estado : 'Sin estado'}</td>
                             <td>
+                                <Link to={`/prestamo/${prestamo._id}/cobrar`} className="colorBtn">Cobrar</Link>
                                 <button className="btn btn-success btn-sm me-1">Detalle</button>
                                 <button className="btn btn-danger btn-sm" onClick={() => deletePrestamo(prestamo._id)}>Eliminar</button>
                             </td>
