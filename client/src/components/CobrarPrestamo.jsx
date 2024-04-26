@@ -111,7 +111,7 @@ const ModificarPrestamo = () => {
                         <input type="number" id="monto" name="monto" value={operacion} />
                     </div>
                     <div className="col-auto">
-                        <label htmlFor="fechaPrestamo">Fecha de abono: </label>
+                        <label htmlFor="fechaPrestamo">Fecha de pago: </label>
                         <DatePicker
                             selected={fechaPrestamo}
                             onChange={date => setFechaPrestamo(date)}
